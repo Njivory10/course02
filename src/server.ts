@@ -30,8 +30,11 @@ require('dotenv').config();
   
   /**************************************************************************** */
 
+  let filteredpath: string; //assign temp variable to store filtered path string
+  let filteredpathstemp: Array<string>; //create string array to store list of filtered paths that will be deleted
+
  // GET /filteredimage?image_url={{URL}}
- app.get( "/filteredimage/", async ( req, res) => {
+ app.get( "/filteredimage/", async ( req:express.Request, res:express.Response) => {
   let { image_url } = req.query;
   
   if ( !image_url ) {
@@ -39,17 +42,17 @@ require('dotenv').config();
               .send(`An image URL is required`);
   }
 
-var filteredpath;
-filteredpath = await filterImageFromURL(image_url);
+filteredpath = await filterImageFromURL(image_url); //return greyscale image path
+
+filteredpathstemp.push(filteredpath);
+deleteLocalFiles(filteredpathstemp); 
+
   return res.status(200)
               .sendFile((filteredpath));
-
-
-              deleteLocalFiles(filteredpath); 
   
 } );
-
-  // // GET /filteredimage/:URL
+  
+// // GET /filteredimage/:URL
     // Implemented as a learning exercise
   // app.get( "/filteredimage/:URL", async ( req, res) => {
   //   let { URL } = req.params;
